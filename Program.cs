@@ -30,11 +30,11 @@ class Program
         if (File.Exists(SessionFile))
         {
             contextOptions.StorageStatePath = SessionFile;
-            Console.WriteLine("✅ セッションファイルを読み込みました（自動ログイン）");
+            Console.WriteLine("★ セッションファイルを読み込みました（自動ログイン）");
         }
         else
         {
-            Console.WriteLine("⚠️ セッションファイルが存在しません。手動ログインモードに入ります。");
+            Console.WriteLine("☆ セッションファイルが存在しません。手動ログインモードに入ります。");
         }
 
         var context = await browser.NewContextAsync(contextOptions);
@@ -44,17 +44,17 @@ class Program
         {
             // 手動ログイン用ページへ移動
             await page.GotoAsync(LoginUrl);
-            Console.WriteLine("🔐 ブラウザでログインしてください（CAPTCHA含む）");
-            Console.WriteLine("✅ ログイン後、Enterキーを押すとセッションを保存します");
+            Console.WriteLine("☆ ブラウザでログインしてください（CAPTCHA含む）");
+            Console.WriteLine("☆ ログイン後、Enterキーを押すとセッションを保存します");
             Console.ReadLine();
 
             await context.StorageStateAsync(new() { Path = SessionFile });
-            Console.WriteLine("💾 セッション保存完了！");
+            Console.WriteLine("★ セッション保存完了！");
         }
 
         // ログイン済みで、ここから自動処理をスタート
         await page.GotoAsync("https://www.2ndstreet.jp/");
-        Console.WriteLine("🚀 ログイン済み状態でサイトにアクセスしました");
+        Console.WriteLine("★ ログイン済み状態でサイトにアクセスしました");
 
         // 必要な操作をここに続けて追加
         // 例：商品検索、カート追加、決済 etc...
