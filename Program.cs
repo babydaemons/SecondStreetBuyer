@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
+namespace SecondStreetBuyer;
+
 class Program
 {
     private const string SessionFile = "session.json";
@@ -55,6 +57,23 @@ class Program
         // ログイン済みで、ここから自動処理をスタート
         await page.GotoAsync("https://www.2ndstreet.jp/");
         Console.WriteLine("★ ログイン済み状態でサイトにアクセスしました");
+
+        var itemLinks = new ItemLinks(page);
+        foreach (var url in new[]
+        {
+            ItemLinks.MensWare,
+            ItemLinks.LadiesWare,
+            ItemLinks.FassionGoods,
+            ItemLinks.Luxury,
+            ItemLinks.PopularBrands
+        })
+        {
+            var links = await itemLinks.GetItemLinks(url);
+            foreach (var link in links)
+            {
+                Console.WriteLine(link);
+            }
+        }
 
         // 必要な操作をここに続けて追加
         // 例：商品検索、カート追加、決済 etc...
