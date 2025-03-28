@@ -22,24 +22,64 @@ namespace SecondStreetBuyer
             _page = page;
         }
 
-        public async Task<IEnumerable<string>> GetItemLinks(string url)
+        public async Task<IEnumerable<Item>> GetItemLinks(string url)
         {
             await _page.GotoAsync(url);
             var items = await _page.QuerySelectorAllAsync("#searchResultListWrapper > ul > li");
-            var links = new List<string>();
+            var itemList = new List<Item>();
+
             foreach (var item in items)
             {
-                var link = await item.QuerySelectorAsync("a");
-                if (link != null)
+                var linkElem = await item.QuerySelectorAsync("a");
+                var urlPath = await linkElem?.GetAttributeAsync("href") ?? string.Empty;
+                var fullUrl = string.IsNullOrEmpty(urlPath) ? string.Empty : $"https://www.2ndstreet.jp{urlPath}";
+
+                var imgElem = await item.QuerySelectorAsync("img");
+                var imageUrl = await imgElem?.GetAttributeAsync("src") ?? string.Empty;
+
+                var brand = await item.QuerySelectorAsync(".itemCard_brand") is IElementHandle brandElem
+                    ? await brandElem.InnerTextAsync()
+                    : string.Empty;
+
+                var name = await item.QuerySelectorAsync(".itemCard_name") is IElementHandle nameElem
+                    ? await nameElem.InnerTextAsync()
+                    : string.Empty;
+
+                var size = await item.QuerySelectorAsync(".itemCard_size") is IElementHandle sizeElem
+                    ? await sizeElem.InnerTextAsync()
+                    : string.Empty;
+
+                var priceText = await item.QuerySelectorAsync(".itemCard_price") is IElementHandle priceElem
+                    ? await priceElem.InnerTextAsync()
+                    : "¥0";
+
+                // 数値部分のみ抽出してintに変換（カンマや¥を削除）
+                var price = int.TryParse(
+                    new string(priceText.Where(char.IsDigit).ToArray()),
+                    out var parsedPrice
+                ) ? parsedPrice : 0;
+
+                itemList.Add(new Item
                 {
-                    links.Add(await link.GetAttributeAsync("href") ?? string.Empty);
-                }
-                else
-                {
-                    Console.WriteLine("リンクが見つかりませんでした");
-                }
+                    Url = fullUrl,
+                    Brand = brand,
+                    Name = name,
+                    Size = size,
+                    Price = price
+                });
             }
-            return links;
+
+            return itemList;
         }
+    }
+
+    struct Item
+    {
+        public string Url;
+        public string ImageUrl;
+        public string Brand;
+        public string Name;
+        public string Size;
+        public int Price;
     }
 }

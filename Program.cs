@@ -71,7 +71,7 @@ class Program
             var links = await itemLinks.GetItemLinks(url);
             foreach (var link in links)
             {
-                Console.WriteLine(link);
+                Console.WriteLine($"{link.Url} {link.Name}");
             }
         }
 
