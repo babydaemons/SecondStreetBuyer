@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SecondStreetBuyer
 {
-    internal class ItemLinks
+    public class ItemLinks
     {
         public const string MensWare = "https://www.2ndstreet.jp/search?goodsType=1&other%5B%5D=nflg&sortBy=arrival";
         public const string LadiesWare = "https://www.2ndstreet.jp/search?goodsType=2&other%5B%5D=nflg&sortBy=arrival";
@@ -73,7 +73,7 @@ namespace SecondStreetBuyer
         }
     }
 
-    struct Item
+    public struct Item
     {
         public string Url;
         public string ImageUrl;

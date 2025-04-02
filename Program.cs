@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SecondStreetBuyer;
 
@@ -47,9 +48,6 @@ class Program
             // 手動ログイン用ページへ移動
             await page.GotoAsync(LoginUrl);
             Console.WriteLine("☆ ブラウザでログインしてください（CAPTCHA含む）");
-            Console.WriteLine("☆ ログイン後、Enterキーを押すとセッションを保存します");
-            Console.ReadLine();
-
             await context.StorageStateAsync(new() { Path = SessionFile });
             Console.WriteLine("★ セッション保存完了！");
         }
@@ -57,6 +55,8 @@ class Program
         // ログイン済みで、ここから自動処理をスタート
         await page.GotoAsync("https://www.2ndstreet.jp/");
         Console.WriteLine("★ ログイン済み状態でサイトにアクセスしました");
+
+        var viewLinks = new List<Item>();
 
         var itemLinks = new ItemLinks(page);
         foreach (var url in new[]
@@ -69,16 +69,21 @@ class Program
         })
         {
             var links = await itemLinks.GetItemLinks(url);
-            foreach (var link in links)
-            {
-                Console.WriteLine($"{link.Url} {link.Name}");
-            }
+            viewLinks.AddRange(links);
         }
 
-        // 必要な操作をここに続けて追加
-        // 例：商品検索、カート追加、決済 etc...
+        View(viewLinks);
 
         // 終了
         await browser.CloseAsync();
+    }
+
+    [STAThread]
+    private static void View(IEnumerable<Item> viewLinks)
+    {
+        var app = new Application();
+        var mainWindow = new MainWindow();
+        mainWindow.LoadItems(viewLinks);
+        app.Run(mainWindow);
     }
 }
