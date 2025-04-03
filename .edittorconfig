@@ -1,0 +1,41 @@
+# .editorconfig
+root = true
+
+# すべてのファイルに共通の設定
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# 一般的なテキストファイルやコードファイル
+[*.cs]
+indent_style = space
+indent_size = 4
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+csharp_new_line_before_open_brace = all
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = flush_left
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
+
+# Visual Studio 用：.editorconfig をスタイルガイドとして適用
+[*.csproj]
+indent_style = space
+indent_size = 2
+
+# Markdown 等では行末空白を許容
+[*.md]
+trim_trailing_whitespace = false
+
+# JSON や YAML のインデントサイズ（ツール連携用）
+[*.json]
+indent_size = 2
+
+[*.yml]
+indent_size = 2
+
+[*.yaml]
+indent_size = 2
